@@ -1,2 +1,2 @@
-treading==4.1.0
+treading
 flask==1.1.2
