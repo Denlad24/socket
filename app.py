@@ -21,7 +21,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 #         socketio.emit('my_response',
 #                       {'data': 'Server generated event', 'count': count},
 #                       namespace='/test')
-
+notes = {}
 
 @app.route('/')
 def index():
@@ -32,7 +32,7 @@ def index():
 def test_broadcast_message(message):
     note = message['data2']
     id = message['data']
-    model.save_note(id, note)
+    notes[id] = note
     rez = model.get_note(id)
     emit('my_response',
          {'data': rez, 'id': id},
@@ -69,7 +69,7 @@ def get_note():
 
 @app.route("/view_all", methods=["POST"])
 def get_notes():
-    rez = model.get_notes()
+    rez = notes
     return render_template('view_all.html', v=rez)
 
 
