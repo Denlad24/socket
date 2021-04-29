@@ -1,1 +1,2 @@
 flask==1.1.2
+flask-sockets==0.2.1
