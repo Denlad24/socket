@@ -1,39 +1,73 @@
+<!DOCTYPE HTML>
 <html>
-  <title>Heroku SocketIO</title>
-  <head>
-<!--     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<head>
+    <title>Flask-SocketIO Test</title>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
+            integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
-      var socket = io.connect('http://' + document.domain + ':' + location.port);
-      socket.on('echo', function(data){
-        $('#response').html('<p>'+data.echo+'</p>');
-      });
-      
-      function send(){
-        socket.emit('send_message', {message : $('form textarea').val()});
-      }
+        $(document).ready(function () {
+            namespace = '/test';
+            var socket = io(namespace);
+
+            // Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+            // socket.on('connect', function () {
+            //     socket.emit('my_event', {data: 'I\'m connected!'});
+            // });
+
+            // Event handler for server sent data.
+            // The callback function is invoked whenever the server emits data
+            // to the client. The data is then displayed in the "Received"
+            // section of the page.
+            socket.on('my_delete_response', function (msg) {
+                $('#log').append($('<div/>').text(msg.data).html());
+                setTimeout(del, 3000);
+            });
+
+            function del() {
+                $('.delete').remove();
+            }
+
+            $('form#broadcast').submit(function () {
+                socket.emit('my_broadcast_event', {data: $('#id_note').val(), data2: $('#note').val()});
+                var frm = document.getElementsByName('broadcast')[0];
+                frm.reset();  // Reset all form data
+                return false;
+            });
+            $('form#delete_note').submit(function () {
+                socket.emit('my_delete_note', {data: $('#id_note_delete').val()});
+                var frm = document.getElementsByName('delete_note')[0];
+                frm.reset();  // Reset all form data
+                return false;
+            });
+        });
     </script>
-    <style>
-      div{
-        position: relative;
-        margin-left: auto;
-        margin-right: auto;
-        width: 400px;
-      }
-      textarea{
-        width: 100%;
-        height: 100px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="input">
-      <form>
-        <textarea placeholder="Send a message to the server..."></textarea>
-        <button type="button" onclick="send(); return false;">Send</button>
-      </form>
-    </div>
-    <div id="response">
-    </div> -->
-<!--   </body> -->
+</head>
+<body>
+<h2>Send:</h2>
+<form name="broadcast" id="broadcast" method="POST" action="#">
+    ID: <input type="text" name="id_note" id="id_note" placeholder="Id"><br>
+    Note: <input type="text" name="note" id="note" placeholder="Заметка"><br>
+    <input type="submit" value="Сохранить" onclick="submitForm()">
+</form>
+<form action="/view" method="POST">
+    View note:<br>
+    <input type="text" name="id"><br>
+    <input type="submit" value="Посмотреть"/>
+</form>
+<form action="/view_all" method="POST">
+    View all notes:<br>
+    <input type="submit" value="Посмотреть все"/>
+</form>
+<form name="delete_note" id="delete_note" action="#" method="POST">
+    Delete note <br>
+    ID: <input type="text" name="id_note" id="id_note_delete"><br>
+    <input value="Delete" type="submit" placeholder="Удалить"/>
+    <p class="delete" id="log"></p>
+</form>
+</body>
 </html>
+
