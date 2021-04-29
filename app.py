@@ -33,6 +33,7 @@ def test_broadcast_message(message):
     note = message['data2']
     id = message['data']
     notes[id] = note
+    print("test")
     rez = model.get_note(id)
     emit('my_response',
          {'data': rez, 'id': id},
