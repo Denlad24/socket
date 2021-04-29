@@ -1,50 +1,85 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO, emit
+import sys
+
+sys.path.append(
+    "C:/Users\Denis\Documents/5 курс\Инженерия информационных систем\socketio\Flask-SocketIO-master\example")
+import model
+
+async_mode = None
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, async_mode=async_mode)
+# thread = None
+# thread_lock = Lock()
 
-@app.route('/getmsg/', methods=['GET'])
-def respond():
-    # Retrieve the name from url parameter
-    name = request.args.get("name", None)
 
-    # For debugging
-    print(f"got name {name}")
+# def background_thread():
+#     """Example of how to send server generated events to clients."""
+#     count = 0
+#     while True:
+#         socketio.sleep(10)
+#         count += 1
+#         socketio.emit('my_response',
+#                       {'data': 'Server generated event', 'count': count},
+#                       namespace='/test')
 
-    response = {}
 
-    # Check if user sent a name at all
-    if not name:
-        response["ERROR"] = "no name found, please send a name."
-    # Check if the user entered a number not a name
-    elif str(name).isdigit():
-        response["ERROR"] = "name can't be numeric."
-    # Now the user entered a valid name
-    else:
-        response["MESSAGE"] = f"Welcome {name} to our awesome platform!!"
-
-    # Return the response in json format
-    return jsonify(response)
-
-@app.route('/post/', methods=['POST'])
-def post_something():
-    param = request.form.get('name')
-    print(param)
-    # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
-    if param:
-        return jsonify({
-            "Message": f"Welcome {name} to our awesome platform!!",
-            # Add this option to distinct the POST request
-            "METHOD" : "POST"
-        })
-    else:
-        return jsonify({
-            "ERROR": "no name found, please send a name."
-        })
-
-# A welcome message to test our server
 @app.route('/')
 def index():
-    return "<h1>Welcome to our server !!</h1>"
+    return render_template('index.html', async_mode=socketio.async_mode)
+
+
+@socketio.on('my_broadcast_event', namespace='/test')
+def test_broadcast_message(message):
+    note = message['data2']
+    id = message['data']
+    model.save_note(id, note)
+    rez = model.get_note(id)
+    emit('my_response',
+         {'data': rez, 'id': id},
+         broadcast=True)
+
+
+@socketio.on('my_delete_2', namespace="/test")
+def delete_note2(message):
+    id = message["data"]
+    model.delete_note(id)
+    emit('my_delete_response_2', {'data': id}, broadcast=True)
+
+
+@socketio.on('my_delete_note', namespace='/test')
+def delete_note(message):
+    id = message["data"]
+    mes1 = 'Заметка удалена'
+    mes2 = 'Заметки с таким id нет'
+    try:
+        model.delete_note(id)
+        emit('my_delete_response', {'data': mes1}, broadcast=True)
+        emit('my_delete_response_2', {'data': id}, broadcast=True)
+    except KeyError:
+        print('Заметки с таким id нет')
+        emit('my_delete_response', {'data': mes2}, broadcast=True)
+
+
+@app.route("/view", methods=["POST"])
+def get_note():
+    id = request.form["id"]
+    rez = model.get_note(id)
+    return render_template('view_one.html', v=rez, flag=0)
+
+
+@app.route("/view_all", methods=["POST"])
+def get_notes():
+    rez = model.get_notes()
+    return render_template('view_all.html', v=rez)
+
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected', request.sid)
+
 
 if __name__ == '__main__':
-    # Threaded option to enable multiple instances for multiple user access support
-    app.run(threaded=True, port=5000)
+    socketio.run(app, threaded=True, port=5000)
