@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sys
-
-sys.path.append(
-    "C:/Users\Denis\Documents/5 курс\Инженерия информационных систем\socketio\Flask-SocketIO-master\example")
 import model
 
 async_mode = None
@@ -82,4 +79,4 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
-    socketio.run(threaded=True, port=5000)
+    socketio.run(app)
