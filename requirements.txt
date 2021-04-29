@@ -1,11 +1,3 @@
-Flask
-Flask-Sockets
-gevent
-gevent-websocket
-greenlet
-gunicorn
-itsdangerous
-Jinja2
-MarkupSafe
-redis
-Werkzeug
+gunicorn==0.16.1 
+Flask 
+Flask-SocketIO
