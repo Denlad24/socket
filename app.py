@@ -15,4 +15,5 @@ def handle_source(json_data):
   socketio.emit('echo', {'echo': 'Server Says: '+text})
 
 if __name__ == "__main__":
+  app.run(threaded=True, port=5000)
   socketio.run(app)
