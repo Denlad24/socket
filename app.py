@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sys
-# from .model import get_notes, save_note
+from model import get_notes, save_note
 
 async_mode = None
 
