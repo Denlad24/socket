@@ -68,7 +68,7 @@ def get_note():
 
 @app.route("/view_all", methods=["POST"])
 def get_notes():
-    rez = model.get_notes
+    rez = model.get_notes()
     return render_template('view_all.html', v=rez)
 
 
