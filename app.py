@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sys
-sys.path.insert(0, 'C./utils')
+sys.path.insert(0, '../utils')
 from model import get_notes, save_note
 
 async_mode = None
