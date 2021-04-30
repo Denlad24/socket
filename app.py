@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sys
-import model
+# import model
 
 async_mode = None
 
@@ -21,7 +21,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 #         socketio.emit('my_response',
 #                       {'data': 'Server generated event', 'count': count},
 #                       namespace='/test')
-notes = {}
+notes = {'1': '1231231', '2': '123123123'}
 
 @app.route('/')
 def index():
@@ -33,7 +33,6 @@ def test_broadcast_message(message):
     note = message['data2']
     id = message['data']
     notes[id] = note
-    print("test")
     rez = model.get_note(id)
     emit('my_response',
          {'data': rez, 'id': id},
