@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sys
-# import model
+import importlib
+
+importlib.import_module(model)
 
 async_mode = None
 
