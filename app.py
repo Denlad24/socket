@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sys
-from model import *
+import model
 
 async_mode = None
 
@@ -21,7 +21,6 @@ socketio = SocketIO(app, async_mode=async_mode)
 #         socketio.emit('my_response',
 #                       {'data': 'Server generated event', 'count': count},
 #                       namespace='/test')
-notes = {'1': '1231231', '2': '123123123'}
 
 @app.route('/')
 def index():
@@ -69,7 +68,7 @@ def get_note():
 
 @app.route("/view_all", methods=["POST"])
 def get_notes():
-    rez = notes
+    rez = model.get_notes
     return render_template('view_all.html', v=rez)
 
 
