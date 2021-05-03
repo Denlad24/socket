@@ -9,6 +9,7 @@ def get_note(id):
 
 def save_note(id, note):
     notes[id] = note
+    return notes
 
 
 def get_notes():
