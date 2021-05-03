@@ -4,7 +4,7 @@ notes = {}
 def get_note(id):
     if id in notes:
         return notes[id]
-    return "NO NOTE FOUND"
+    return notes
 
 
 def save_note(id, note):
