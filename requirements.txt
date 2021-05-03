@@ -1,4 +1,4 @@
 gevent
-Flask==0.10.1
-Flask-SocketIO==0.6.0
-gunicorn==17.5
+Flask
+Flask-SocketIO
+gunicorn
