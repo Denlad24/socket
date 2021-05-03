@@ -1,4 +1,4 @@
-notes = {"1", "asdada"}
+notes = {'1': '12123', '2': '123123'}
 
 def get_note(id):
     if id in notes:
