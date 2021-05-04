@@ -1,4 +1,4 @@
-notes = {'1': '12123', '2': '123123'}
+from app import notes
 
 def get_note(id):
     if id in notes:
