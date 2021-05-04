@@ -1,4 +1,4 @@
-from app import notes
+notes = {}
 
 def get_note(id):
     if id in notes:
